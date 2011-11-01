@@ -1,0 +1,22 @@
+--- libgda-4.2.1/m4/mdbtools.m4	2010-11-10 19:08:10.000000000 +0100
++++ libgda-4.2.1.new//m4/mdbtools.m4	2010-11-14 19:05:43.126773908 +0100
+@@ -136,7 +136,7 @@
+ 	    for d in $mdb_test_dir
+ 	    do
+ 	        AC_MSG_CHECKING([for MDB Tools files in $d])
+-	        if test -f $d/include/mdbtools.h -a -f $d/$mdb_loclibdir/libmdb$mdb_libext -o -f $d/include/mdbtools.h -a -f $d/$mdb_loclibdir/libmdb.a
++	        if test -f $d/include/mdb/mdbtools.h -a -f $d/$mdb_loclibdir/libmdb$mdb_libext -o -f $d/include/mdb/mdbtools.h -a -f $d/$mdb_loclibdir/libmdb.a
+ 	        then
+   	            save_CFLAGS="$CFLAGS"
+ 	            CFLAGS="$CFLAGS -I$d/include $mdb_glib_cflags"
+@@ -155,8 +155,8 @@
+ 	            if test x$mdbdir != x
+ 		    then
+ 		        AC_MSG_RESULT([found])
+-			MDB_CFLAGS=-I${mdbdir}/include
+-	    		MDB_LIBS="-L${mdbdir}/$mdb_loclibdir -lmdb"
++			MDB_CFLAGS=-I${mdbdir}/include/mdb
++	    		MDB_LIBS="-lmdb"
+ 		        break
+   		    else
+ 		        AC_MSG_RESULT([not found])
