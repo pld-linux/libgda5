@@ -326,6 +326,7 @@ export JAVA_HOME="%{java_home}"
 %{__automake}
 %configure \
 	--disable-silent-rules \
+	%{!?with_vala:--disable-vala} \
 	%{?with_static_libs:--enable-static} \
 	--enable-system-sqlite \
 	--%{?with_apidocs:en}%{!?with_apidocs:dis}able-gtk-doc \
