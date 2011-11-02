@@ -68,6 +68,7 @@ BuildRequires:	tar >= 1:1.22
 %{?with_vala:BuildRequires:	vala >= 0.14}
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.28.0
+Conflicts:	libgda4 < 4.2.10-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
