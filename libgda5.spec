@@ -3,7 +3,7 @@
 # Conditional build:
 %bcond_without	apidocs		# don't generate API documentation
 %bcond_without	static_libs	# don't build static libraries
-%bcond_with	vala		# Vala support (seems broken)
+%bcond_without	vala		# Vala support
 # - database plugins:
 %bcond_without	jdbc		# build without JDBC plugin
 %bcond_without	ldap		# build without LDAP plugin
