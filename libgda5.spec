@@ -346,7 +346,8 @@ export JAVA_HOME="%{java_home}"
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	VALA_VAPIDIR=%{_datadir}/vala/vapi
 
 # modules dlopened by *.so through libgmodule
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libgda-5.0/providers/*.{a,la}
