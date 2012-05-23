@@ -18,12 +18,12 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.0.2
+Version:	5.0.3
 Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.0/libgda-%{version}.tar.xz
-# Source0-md5:	c8b3b61abf82776e6507368f16491e09
+# Source0-md5:	58efdf8f727b5a0b1e5fb35d19ee76a7
 Patch0:		%{name}-configure.patch
 URL:		http://www.gnome-db.org/
 BuildRequires:	autoconf >= 2.67
@@ -32,6 +32,7 @@ BuildRequires:	bison
 BuildRequires:	db-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	flex
+BuildRequires:	gdk-pixbuf2-devel
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.28.0
 BuildRequires:	glibc-misc
@@ -49,7 +50,7 @@ BuildRequires:	json-glib-devel
 BuildRequires:	libgcrypt-devel >= 1.1.42
 BuildRequires:	libgnome-keyring-devel
 BuildRequires:	libsoup-devel >= 2.24.0
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.0
 BuildRequires:	libunique-devel
 BuildRequires:	libxml2-devel >= 1:2.6.26
 BuildRequires:	libxslt-devel >= 1.1.17
@@ -142,6 +143,7 @@ Summary(pl.UTF-8):	Biblioteka GNU Data Access UI
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gtk+3 >= 3.0.0
+Requires:	iso-codes
 
 %description ui
 GNU Data Access UI library.
@@ -366,6 +368,8 @@ mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{sr@Latn,sr@latin}
 
 %find_lang libgda-5.0
 %find_lang gda-browser --with-gnome
+%find_lang gda-sql --with-gnome
+cat gda-sql.lang >> gda-browser.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
