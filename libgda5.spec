@@ -19,12 +19,13 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.0.3
-Release:	1
+Release:	2
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.0/libgda-%{version}.tar.xz
 # Source0-md5:	58efdf8f727b5a0b1e5fb35d19ee76a7
 Patch0:		%{name}-configure.patch
+Patch1:		gi.patch
 URL:		http://www.gnome-db.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake >= 1:1.8
@@ -314,6 +315,7 @@ Narzędzia graficzne dla GDA.
 %prep
 %setup -q -n libgda-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 # included version is bash-specific, use system file

@@ -1,0 +1,26 @@
+From 4dd8c531a7042a74e4fbd34c8614c72d67018024 Mon Sep 17 00:00:00 2001
+From: Vivien Malerba <malerba@gnome-db.org>
+Date: Sun, 23 Sep 2012 22:07:01 +0200
+Subject: [PATCH] Correction for bug #684141
+
+Mark GDA_SERVER_PROVIDER_UNDEFINED_LIMITING_THREAD as not introspectable
+---
+ libgda/gda-server-provider.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/libgda/gda-server-provider.h b/libgda/gda-server-provider.h
+index c0397e5..c448f00 100644
+--- a/libgda/gda-server-provider.h
++++ b/libgda/gda-server-provider.h
+@@ -303,6 +303,9 @@ typedef void (*GdaServerProviderAsyncCallback) (GdaServerProvider *provider, Gda
+ typedef void (*GdaServerProviderExecCallback) (GdaServerProvider *provider, GdaConnection *cnc, guint task_id, 
+ 					       GObject *result_obj, const GError *error, gpointer data);
+ 
++/**
++ * GDA_SERVER_PROVIDER_UNDEFINED_LIMITING_THREAD: (skip)
++ */
+ #define GDA_SERVER_PROVIDER_UNDEFINED_LIMITING_THREAD ((gpointer)0x1)
+ struct _GdaServerProviderClass {
+ 	GObjectClass parent_class;
+-- 
+1.7.12.1
