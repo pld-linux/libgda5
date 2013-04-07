@@ -1,9 +1,9 @@
-# TODO: oracle, bdbsql providers
+# TODO: oracle, bdbsql providers; fix broken Vala support?
 #
 # Conditional build:
 %bcond_without	apidocs		# don't generate API documentation
 %bcond_without	static_libs	# don't build static libraries
-%bcond_without	vala		# Vala support
+%bcond_with	vala		# Vala support
 # - database plugins:
 %bcond_without	jdbc		# build without JDBC plugin
 %bcond_without	ldap		# build without LDAP plugin
@@ -27,6 +27,7 @@ Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.0/libgda-%{version}.tar
 Patch0:		%{name}-configure.patch
 Patch1:		gi.patch
 Patch2:		graphviz-api.patch
+Patch3:		doc-fixes.patch
 URL:		http://www.gnome-db.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake >= 1:1.8
@@ -318,6 +319,7 @@ Narzędzia graficzne dla GDA.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 # included version is bash-specific, use system file
