@@ -3,7 +3,7 @@
 # Conditional build:
 %bcond_without	apidocs		# don't generate API documentation
 %bcond_without	static_libs	# don't build static libraries
-%bcond_with	vala		# Vala support
+%bcond_with	vala		# Vala support (doesn't build as of 5.0.4/vala 0.20)
 # - database plugins:
 %bcond_without	jdbc		# build without JDBC plugin
 %bcond_without	ldap		# build without LDAP plugin
@@ -18,16 +18,16 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.0.3
-Release:	3
+Version:	5.0.4
+Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.0/libgda-%{version}.tar.xz
-# Source0-md5:	58efdf8f727b5a0b1e5fb35d19ee76a7
+# Source0-md5:	33880eae7203c1aed2edb512733cf270
 Patch0:		%{name}-configure.patch
-Patch1:		gi.patch
-Patch2:		graphviz-api.patch
-Patch3:		doc-fixes.patch
+Patch1:		graphviz-api.patch
+Patch2:		%{name}-missing.patch
+Patch3:		%{name}-vala.patch
 URL:		http://www.gnome-db.org/
 BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake >= 1:1.8
@@ -69,7 +69,7 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sqlite3-devel >= 3.6.11
 BuildRequires:	tar >= 1:1.22
-%{?with_vala:BuildRequires:	vala >= 0.14}
+%{?with_vala:BuildRequires:	vala >= 0.20}
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.28.0
 Conflicts:	libgda4 < 4.2.10-2
@@ -391,7 +391,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f libgda-5.0.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README TODO
+%doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/gda-list-config
 %attr(755,root,root) %{_bindir}/gda-list-config-5.0
 %attr(755,root,root) %{_bindir}/gda-list-server-op
