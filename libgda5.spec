@@ -1,15 +1,16 @@
-# TODO: oracle, bdbsql providers; fix broken Vala support?
+# TODO: oracle provider; fix broken Vala support?
 #
 # Conditional build:
-%bcond_without	apidocs		# don't generate API documentation
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	apidocs		# API documentation
+%bcond_without	static_libs	# static libraries build
 %bcond_with	vala		# Vala support (doesn't build as of 5.0.4/vala 0.20)
 # - database plugins:
-%bcond_without	jdbc		# build without JDBC plugin
-%bcond_without	ldap		# build without LDAP plugin
-%bcond_without	mdb		# build without MDB plugin
-%bcond_without	mysql		# build without MySQL plugin
-%bcond_without	pgsql		# build without PostgreSQL plugin
+%bcond_without	dbsql		# BerkeleyDB SQL plugin
+%bcond_without	jdbc		# JDBC plugin
+%bcond_without	ldap		# LDAP plugin
+%bcond_without	mdb		# MDB plugin
+%bcond_without	mysql		# MySQL plugin
+%bcond_without	pgsql		# PostgreSQL plugin
 #
 %ifnarch i586 i686 pentium3 pentium4 athlon %{x8664}
 %undefine	with_jdbc
@@ -33,6 +34,7 @@ BuildRequires:	autoconf >= 2.67
 BuildRequires:	automake >= 1:1.8
 BuildRequires:	bison
 BuildRequires:	db-devel
+%{?with_dbsql:BuildRequires:	db-sql-devel}
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	flex
 BuildRequires:	gdk-pixbuf2-devel
@@ -202,6 +204,18 @@ This package contains the GDA Berkeley DB provider.
 
 %description provider-db -l pl.UTF-8
 Pakiet dostaczający dane z Berkeley DB dla GDA.
+
+%package provider-dbsql
+Summary:	GDA Berkeley DB SQL provider
+Summary(pl.UTF-8):	Źródło danych Berkeley DB SQL dla GDA
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description provider-dbsql
+This package contains the GDA Berkeley DB SQL provider.
+
+%description provider-dbsql -l pl.UTF-8
+Pakiet dostaczający dane z Berkeley DB SQL dla GDA.
 
 %package provider-jdbc
 Summary:	GDA JDBC provider
@@ -435,6 +449,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/libgda-5.0
 %{_pkgconfigdir}/libgda-5.0.pc
 %{_pkgconfigdir}/libgda-bdb-5.0.pc
+%{?with_dbsql:%{_pkgconfigdir}/libgda-bdbsql-5.0.pc}
 %{?with_jdbc:%{_pkgconfigdir}/libgda-jdbc-5.0.pc}
 %{?with_ldap:%{_pkgconfigdir}/libgda-ldap-5.0.pc}
 %{?with_mdb:%{_pkgconfigdir}/libgda-mdb-5.0.pc}
@@ -494,6 +509,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-bdb.so
 %{_datadir}/libgda-5.0/bdb_specs_*.xml
+
+%if %{with dbsql}
+%files provider-dbsql
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-bdbsql.so
+%{_datadir}/libgda-5.0/bdbsql_specs_*.xml
+%endif
 
 %if %{with jdbc}
 %files provider-jdbc
