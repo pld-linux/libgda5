@@ -1,0 +1,15 @@
+--- libgda-5.2.0/tools/help/Makefile.am.orig	2013-10-19 14:35:31.000000000 +0200
++++ libgda-5.2.0/tools/help/Makefile.am	2013-11-16 11:22:24.609065479 +0100
+@@ -1,9 +1,8 @@
+ @YELP_HELP_RULES@
+ 
+-DOC_ID = gda-sql
+-DOC_NOCHECK = yes
++HELP_ID = gda-sql
+ 
+-DOC_PAGES = \
++HELP_FILES = \
+ 	gda-sql-help.xml
+ 
+-DOC_LINGUAS = 
++HELP_LINGUAS = 

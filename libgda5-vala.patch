@@ -1,11 +1,11 @@
---- libgda-5.0.4/configure.ac.orig	2013-06-03 22:04:37.000000000 +0200
-+++ libgda-5.0.4/configure.ac	2013-06-08 21:54:49.422460301 +0200
-@@ -485,7 +485,7 @@
- have_vala=no
- if test "x$found_introspection" = "xyes"
+--- libgda-5.2.0/configure.ac.orig	2013-11-11 17:47:08.000000000 +0100
++++ libgda-5.2.0/configure.ac	2013-11-15 16:51:07.911863440 +0100
+@@ -542,7 +542,7 @@
+ if test "x$enable_vala" = "xyes"
  then
--    VALA_MODULES="libvala-0.16 >= 0.15.1"
-+    VALA_MODULES="libvala-0.20 >= 0.15.1"
-     PKG_CHECK_MODULES(VALA, $VALA_MODULES,
-         if test "$enable_vala" = "yes" -o "$enable_vala" = "auto"
- 	then
+ 	AM_PROG_VALAC([0.17.7])
+-	VAPIGEN_CHECK([0.17.7],[0.18],,no)
++	VAPIGEN_CHECK([0.17.7],,,no)
+ else
+ 	AM_CONDITIONAL(ENABLE_VAPIGEN,false)
+ fi

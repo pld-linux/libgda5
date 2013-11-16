@@ -1,11 +1,14 @@
-# TODO: oracle provider; fix broken Vala support?
+# TODO:
+# - oracle provider
+# - glade catalog?
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
 %bcond_without	static_libs	# static libraries build
-%bcond_with	vala		# Vala support (doesn't build as of 5.0.4/vala 0.20)
+%bcond_without	vala		# Vala APIs and GdaData C library
 # - database plugins:
 %bcond_without	dbsql		# BerkeleyDB SQL plugin
+%bcond_without	firebird	# Firebird plugins
 %bcond_without	jdbc		# JDBC plugin
 %bcond_without	ldap		# LDAP plugin
 %bcond_without	mdb		# MDB plugin
@@ -19,43 +22,46 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.0.4
+Version:	5.2.0
 Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.0/libgda-%{version}.tar.xz
-# Source0-md5:	33880eae7203c1aed2edb512733cf270
+Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
+# Source0-md5:	db4c6dd95493f7fa032c3862893c4f4b
 Patch0:		%{name}-configure.patch
 Patch1:		graphviz-api.patch
 Patch2:		%{name}-missing.patch
 Patch3:		%{name}-vala.patch
+Patch4:		%{name}-format.patch
+Patch5:		%{name}-yelp.patch
 URL:		http://www.gnome-db.org/
-BuildRequires:	autoconf >= 2.67
-BuildRequires:	automake >= 1:1.8
+%{?with_firebird:BuildRequires:	Firebird-devel}
+BuildRequires:	autoconf >= 2.68
+BuildRequires:	automake >= 1:1.11.1
 BuildRequires:	bison
 BuildRequires:	db-devel
 %{?with_dbsql:BuildRequires:	db-sql-devel}
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	flex
-BuildRequires:	gdk-pixbuf2-devel
+BuildRequires:	gdk-pixbuf2-devel >= 2.0
 BuildRequires:	gettext-devel
-BuildRequires:	glib2-devel >= 1:2.28.0
+BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	glibc-misc
-BuildRequires:	gnome-doc-utils >= 0.9.0
-BuildRequires:	gobject-introspection-devel >= 0.6.5
+BuildRequires:	gobject-introspection-devel >= 1.30.0
 BuildRequires:	goocanvas2-devel >= 2.0
 BuildRequires:	graphviz-devel
 BuildRequires:	gtk+3-devel >= 3.0.0
 BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	gtksourceview3-devel >= 3.0
-BuildRequires:	intltool >= 0.40.0
+BuildRequires:	intltool >= 0.40.6
 BuildRequires:	iso-codes
 %{?with_jdbc:BuildRequires:	jdk}
 BuildRequires:	json-glib-devel
 BuildRequires:	libgcrypt-devel >= 1.1.42
-BuildRequires:	libgnome-keyring-devel
+%{?with_vala:BuildRequires:	libgee-devel >= 0.8.0}
+BuildRequires:	libsecret-devel
 BuildRequires:	libsoup-devel >= 2.24.0
-BuildRequires:	libtool >= 2:2.0
+BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	libunique-devel
 BuildRequires:	libxml2-devel >= 1:2.6.26
 BuildRequires:	libxslt-devel >= 1.1.17
@@ -71,9 +77,10 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sqlite3-devel >= 3.6.11
 BuildRequires:	tar >= 1:1.22
-%{?with_vala:BuildRequires:	vala >= 0.20}
+%{?with_vala:BuildRequires:	vala >= 2:0.18}
 BuildRequires:	xz
-Requires:	glib2 >= 1:2.28.0
+BuildRequires:	yelp-tools
+Requires:	glib2 >= 1:2.32.0
 Conflicts:	libgda4 < 4.2.10-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -100,7 +107,7 @@ Summary:	GNU Data Access development files
 Summary(pl.UTF-8):	Pliki programistyczne biblioteki GNU Data Access
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.28.0
+Requires:	glib2-devel >= 1:2.32.0
 Requires:	libxml2-devel >= 1:2.6.26
 Requires:	libxslt-devel >= 1.1.17
 
@@ -134,13 +141,13 @@ Summary:	libgda 5.x API for Vala language
 Summary(pl.UTF-8):	API libgda 5.x dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	vala >= 0.14
+Requires:	vala >= 2:0.18
 
 %description -n vala-libgda5
-libgda 4.x API for Vala language.
+libgda 5.x API for Vala language.
 
 %description -n vala-libgda5 -l pl.UTF-8
-API libgda 4.x dla języka Vala.
+API libgda 5.x dla języka Vala.
 
 %package ui
 Summary:	GNU Data Access UI library
@@ -181,6 +188,19 @@ GNU Data Access UI static library.
 %description ui-static -l pl.UTF-8
 Statyczna biblioteka GNU Data Access UI.
 
+%package -n vala-libgda5-ui
+Summary:	libgda-ui 5.x API for Vala language
+Summary(pl.UTF-8):	API libgda-ui 5.x dla języka Vala
+Group:		Development/Libraries
+Requires:	%{name}-ui-devel = %{version}-%{release}
+Requires:	vala-libgda5 = %{version}-%{release}
+
+%description -n vala-libgda5-ui
+libgda-ui 5.x API for Vala language.
+
+%description -n vala-libgda5-ui -l pl.UTF-8
+API libgda-ui 5.x dla języka Vala.
+
 %package apidocs
 Summary:	GNU Data Access API documentation
 Summary(pl.UTF-8):	Dokumentacja API GNU Data Access
@@ -216,6 +236,18 @@ This package contains the GDA Berkeley DB SQL provider.
 
 %description provider-dbsql -l pl.UTF-8
 Pakiet dostaczający dane z Berkeley DB SQL dla GDA.
+
+%package provider-firebird
+Summary:	GDA Firebird providers
+Summary(pl.UTF-8):	Źródła danych Firebirda dla GDA
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description provider-firebird
+This package contains the GDA Firebird providers.
+
+%description provider-firebird -l pl.UTF-8
+Pakiet dostaczający dane z Firebirda dla GDA.
 
 %package provider-jdbc
 Summary:	GDA JDBC provider
@@ -334,6 +366,8 @@ Narzędzia graficzne dla GDA.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 %build
 # included version is bash-specific, use system file
@@ -347,19 +381,29 @@ export JAVA_HOME="%{java_home}"
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
+%if %{with jdbc}
+# included getsp.class fails with Sun/Oracle JDK 1.6, regenerate
+javac getsp.java
+%endif
 %configure \
 	--disable-silent-rules \
 	%{!?with_vala:--disable-vala} \
+	--enable-gda-gi \
+	--enable-gdaui-gi \
+	%{?with_vala:--enable-gdaui-vala} \
+	--enable-gtk-doc%{!?with_apidocs:=no} \
+	--enable-json \
 	%{?with_static_libs:--enable-static} \
 	--enable-system-sqlite \
-	--%{?with_apidocs:en}%{!?with_apidocs:dis}able-gtk-doc \
-	--with-html-dir=%{_gtkdocdir} \
+	%{?with_vala:--enable-vala --enable-vala-extensions} \
 	--with-bdb=/usr \
 	--with-bdb-libdir-name=%{_lib} \
-	--with%{!?with_jdbc:out}-java \
-	--with%{!?with_mdb:out}-mdb \
-	--with%{!?with_mysql:out}-mysql \
-	--with%{!?with_pgsql:out}-postgres \
+	--with-html-dir=%{_gtkdocdir} \
+	--with-firebird%{!?with_firebird:=no} \
+	--with-java%{!?with_jdbc:=no} \
+	--with-mdb%{!?with_mdb:=no} \
+	--with-mysql%{!?with_mysql:=no} \
+	--with-postgres%{!?with_pgsql:=no} \
 	--without-oracle
 
 %{__make} -j1
@@ -419,7 +463,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgda-report-5.0.so.4
 %attr(755,root,root) %{_libdir}/libgda-xslt-5.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgda-xslt-5.0.so.4
+%if %{with vala}
+%attr(755,root,root) %{_libdir}/libgdadata-5.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgdadata-5.0.so.0
+%endif
 %{_libdir}/girepository-1.0/Gda-5.0.typelib
+%if %{with vala}
+%{_libdir}/girepository-1.0/GdaData-5.0.typelib
+%endif
 %dir %{_libdir}/libgda-5.0
 %dir %{_libdir}/libgda-5.0/providers
 %dir %{_datadir}/libgda-5.0
@@ -445,11 +496,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgda-5.0.so
 %attr(755,root,root) %{_libdir}/libgda-report-5.0.so
 %attr(755,root,root) %{_libdir}/libgda-xslt-5.0.so
+%if %{with vala}
+%attr(755,root,root) %{_libdir}/libgdadata-5.0.so
+%endif
 %{_datadir}/gir-1.0/Gda-5.0.gir
+%if %{with vala}
+%{_datadir}/gir-1.0/GdaData-5.0.gir
+%endif
 %{_includedir}/libgda-5.0
 %{_pkgconfigdir}/libgda-5.0.pc
 %{_pkgconfigdir}/libgda-bdb-5.0.pc
 %{?with_dbsql:%{_pkgconfigdir}/libgda-bdbsql-5.0.pc}
+%{?with_firebird:%{_pkgconfigdir}/libgda-firebird-5.0.pc}
 %{?with_jdbc:%{_pkgconfigdir}/libgda-jdbc-5.0.pc}
 %{?with_ldap:%{_pkgconfigdir}/libgda-ldap-5.0.pc}
 %{?with_mdb:%{_pkgconfigdir}/libgda-mdb-5.0.pc}
@@ -460,6 +518,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libgda-sqlite-5.0.pc
 %{_pkgconfigdir}/libgda-xslt-5.0.pc
 %{_pkgconfigdir}/libgda-web-5.0.pc
+%{?with_vala:%{_pkgconfigdir}/libgdadata-5.0.pc}
 
 %if %{with static_libs}
 %files static
@@ -467,11 +526,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgda-5.0.a
 %{_libdir}/libgda-report-5.0.a
 %{_libdir}/libgda-xslt-5.0.a
+%if %{with vala}
+%{_libdir}/libgdadata-5.0.a
+%endif
 %endif
 
 %if %{with vala}
 %files -n vala-libgda5
 %defattr(644,root,root,755)
+%{_datadir}/vala/vapi/gdadata-5.0.vapi
 %{_datadir}/vala/vapi/libgda-5.0.vapi
 %endif
 
@@ -498,6 +561,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgda-ui-5.0.a
 %endif
 
+%if %{with vala}
+%files -n vala-libgda5-ui
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/libgdaui-5.0.vapi
+%endif
+
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
@@ -515,6 +584,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-bdbsql.so
 %{_datadir}/libgda-5.0/bdbsql_specs_*.xml
+%endif
+
+%if %{with firebird}
+%files provider-firebird
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-firebird-client.so
+%attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-firebird-embed.so
+%{_datadir}/libgda-5.0/firebird_specs_*.xml
 %endif
 
 %if %{with jdbc}

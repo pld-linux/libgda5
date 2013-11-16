@@ -1,55 +1,19 @@
-From f3c0fe314744b079b745afab4c24e5f7c63de784 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Ha=C3=AFkel=20Gu=C3=A9mar?= <hguemar@fedoraproject.org>
-Date: Sun, 10 Mar 2013 10:15:36 +0100
-Subject: [PATCH 2/2] fix calls to deprecated graphviz graph API
-
----
- tools/browser/canvas/browser-canvas.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/tools/browser/canvas/browser-canvas.c b/tools/browser/canvas/browser-canvas.c
-index a67f2f0..b228fd3 100644
---- a/tools/browser/canvas/browser-canvas.c
-+++ b/tools/browser/canvas/browser-canvas.c
-@@ -851,13 +851,13 @@ browser_canvas_perform_auto_layout (BrowserCanvas *canvas, gboolean animate, Bro
- 	if (!gvc)
- 		gvc = gvContext ();
+--- libgda-5.2.0/configure.ac.orig	2013-11-15 17:06:38.881824566 +0100
++++ libgda-5.2.0/configure.ac	2013-11-15 17:30:10.915098425 +0100
+@@ -260,6 +260,8 @@
+ 		if test "x$have_graphviz" = "xyes"
+ 		then
+ 			dnl test if new API is supported
++			save_CFLAGS="$CFLAGS"
++			CFLAGS="$CFLAGS $GRAPHVIZ_CFLAGS"
+ 			AC_MSG_CHECKING([whether Graphviz's new API is supported])
+ 			AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+ #include <gvc.h>
+@@ -270,6 +272,7 @@
+ }
+ ])],
+                         graphviz_new_api=yes, graphviz_new_api=no)
++			CFLAGS="$save_CFLAGS"
  
--	graph = agopen ("BrowserCanvasLayout", AGRAPH);
--        agnodeattr (graph, "shape", "box");
--        agnodeattr (graph, "height", ".1");
--        agnodeattr (graph, "width", ".1");
--        agnodeattr (graph, "fixedsize", "true");
--        agnodeattr (graph, "pack", "true");
--	agnodeattr (graph, "packmode", "node");
-+	graph = agopen ("BrowserCanvasLayout", Agdirected, NULL);
-+        agnode (graph, "shape", "box");
-+        agset (graph, "height", ".1");
-+        agset (graph, "width", ".1");
-+        agset (graph, "fixedsize", "true");
-+        agset (graph, "pack", "true");
-+	agset (graph, "packmode", "node");
- 
- 
- 	if (class->get_layout_items)
-@@ -885,7 +885,7 @@ browser_canvas_perform_auto_layout (BrowserCanvas *canvas, gboolean animate, Bro
- 		nodes_list = g_slist_prepend (nodes_list, nl);
- 		
- 		tmp = g_strdup_printf ("%p", item);
--		node = agnode (graph, tmp);
-+		node = agnode (graph, tmp, 0);
- 		nl->node = node;
- 		g_hash_table_insert (nodes_hash, item, node);
- 		
-@@ -929,7 +929,7 @@ browser_canvas_perform_auto_layout (BrowserCanvas *canvas, gboolean animate, Bro
- 			from_node = (Agnode_t*) g_hash_table_lookup (nodes_hash, from);
- 			to_node = (Agnode_t*) g_hash_table_lookup (nodes_hash, to);
- 			if (from_node && to_node)
--				agedge (graph, from_node, to_node);
-+			  agedge (graph, from_node, to_node, "", 0);
- 		}
- 	}
- 
--- 
-1.8.1.4
-
+ 			AC_MSG_RESULT($graphviz_new_api)
+ 			if test "$graphviz_new_api" = "yes"; then
