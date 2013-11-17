@@ -423,7 +423,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
-mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{sr@Latn,sr@latin}
+# outdated version of sr@latin
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/sr@Latn
 
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
