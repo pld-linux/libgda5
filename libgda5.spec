@@ -400,6 +400,7 @@ javac getsp.java
 	--with-bdb-libdir-name=%{_lib} \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-firebird%{!?with_firebird:=no} \
+	--with-firebird-libdir-name=%{_lib} \
 	--with-java%{!?with_jdbc:=no} \
 	--with-mdb%{!?with_mdb:=no} \
 	--with-mysql%{!?with_mysql:=no} \
