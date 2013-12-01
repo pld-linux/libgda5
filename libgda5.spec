@@ -15,7 +15,7 @@
 %bcond_without	mysql		# MySQL plugin
 %bcond_without	pgsql		# PostgreSQL plugin
 #
-%ifarch i486 i586 i686 pentium3 pentium4 athlon %{x8664}
+%ifnarch i486 i586 i686 pentium3 pentium4 athlon %{x8664}
 %undefine	with_jdbc
 %endif
 #
@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.1
-Release:	2
+Release:	3
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
