@@ -15,9 +15,9 @@
 %bcond_without	mysql		# MySQL plugin
 %bcond_without	pgsql		# PostgreSQL plugin
 #
-%ifnarch i586 i686 pentium3 pentium4 athlon %{x8664}
-%undefine	with_jdbc
-%endif
+#ifnarch i586 i686 pentium3 pentium4 athlon %{x8664}
+#undefine	with_jdbc
+#endif
 #
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
