@@ -34,6 +34,7 @@ Patch2:		%{name}-missing.patch
 Patch3:		%{name}-vala.patch
 Patch4:		%{name}-format.patch
 Patch5:		%{name}-yelp.patch
+Patch6:		java-arch.patch
 URL:		http://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
@@ -368,12 +369,19 @@ Narzędzia graficzne dla GDA.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 # included version is bash-specific, use system file
 cp -f %{_aclocaldir}/introspection.m4 m4/introspection.m4
 %if %{with jdbc}
 export JAVA_HOME="%{java_home}"
+%ifarch %{ix86}
+export _JAVA_SUFFIX="/lib/i386/server"
+%endif
+%ifarch %{x8664}
+export _JAVA_SUFFIX="/lib/amd64/server"
+%endif
 %endif
 %{__gtkdocize}
 %{__intltoolize}

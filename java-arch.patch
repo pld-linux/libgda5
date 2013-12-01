@@ -1,0 +1,45 @@
+--- libgda-5.2.1/getsp.java~	2013-10-19 14:35:27.000000000 +0200
++++ libgda-5.2.1/getsp.java	2013-12-01 10:06:13.393710066 +0100
+@@ -10,7 +10,8 @@
+ 			}
+ 			else if (args[0].compareTo("-libs")==0) {
+ 				String prefix="-L";
+-				if (args.length>1) prefix=args[1];
++				String suffix="/lib/amd64/server";
++				if (args.length>1) suffix=args[1];
+ 
+ 				// we're not using StringTokenizer in case the JVM is very crude
+ 				int i=0,j,k=0;
+@@ -25,7 +27,6 @@
+ 				while (i<=j) {
+ 					if (i==j || lp.charAt(i)==ps) {
+ 						String lib=lp.substring(k,i);
+-						String suffix="/lib/amd64/server";
+ 						k=i+1;
+ 						if (lib.compareTo(".")!=0)
+ 							r=(r==null)?(prefix+lib+suffix):(r+" "+prefix+lib+suffix);
+@@ -50,7 +51,9 @@
+ 
+ 				if (r!=null) System.out.println(r);
+ 			} else if (args[0].compareTo("-ldpath")==0) {
+-				String lp1=System.getProperty("java.home")+"/lib/amd64/server";
++				String suffix="/lib/amd64/server";
++				if (args.length>1) suffix=args[1];
++				String lp1=System.getProperty("java.home")+suffix;
+ 				String lp2=System.getProperty("java.library.path");
+ 				System.out.println(lp1+":"+lp2);
+ 			}
+--- libgda-5.2.1/m4/java.m4~	2013-10-19 14:35:27.000000000 +0200
++++ libgda-5.2.1/m4/java.m4	2013-12-01 10:07:36.001317264 +0100
+@@ -213,9 +213,9 @@
+ 	                    JAVA_LD_PATH=
+ 	                    ;;
+ 	                *)
+-	                    RUN_JAVA(JAVA_LIBS, [-classpath ${srcdir} getsp -libs])
++	                    RUN_JAVA(JAVA_LIBS, [-classpath ${srcdir} getsp -libs ${_JAVA_SUFFIX}])
+ 	                    JAVA_LIBS="${JAVA_LIBS} -ljvm"
+-			    RUN_JAVA(JAVA_LD_PATH, [-classpath ${srcdir} getsp -ldpath])
++			    RUN_JAVA(JAVA_LD_PATH, [-classpath ${srcdir} getsp -ldpath ${_JAVA_SUFFIX}])
+ 	           	    ;;
+ 	            esac
+ 	            # note that we actually don't test JAVA_LIBS - we hope that the detection
