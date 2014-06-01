@@ -1,5 +1,4 @@
 # TODO:
-# - oracle provider
 # - glade catalog?
 #
 # Conditional build:
@@ -13,6 +12,7 @@
 %bcond_without	ldap		# LDAP plugin
 %bcond_without	mdb		# MDB plugin
 %bcond_without	mysql		# MySQL plugin
+%bcond_with	oci		# Oracle DB plugin
 %bcond_without	pgsql		# PostgreSQL plugin
 #
 %ifnarch i486 i586 i686 pentium3 pentium4 athlon %{x8664}
@@ -29,7 +29,7 @@ Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
 # Source0-md5:	d2676630e621ddf5db6e336e62c23742
 Patch0:		%{name}-configure.patch
-
+Patch1:		%{name}-oracle.patch
 Patch2:		%{name}-missing.patch
 Patch3:		%{name}-vala.patch
 Patch4:		%{name}-format.patch
@@ -70,6 +70,7 @@ BuildRequires:	libxslt-devel >= 1.1.17
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	openssl-devel
+%{?with_oci:BuildRequires:	oracle-instantclient-devel}
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig >= 1:0.18
 %{?with_pgsql:BuildRequires:	postgresql-devel}
@@ -299,6 +300,18 @@ This package contains the GDA MySQL provider.
 %description provider-mysql -l pl.UTF-8
 Pakiet dostarczający dane z MySQL dla GDA.
 
+%package provider-oracle
+Summary:	GDA Oracle provider
+Summary(pl.UTF-8):	Źródło danych Oracle dla GDA
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description provider-oracle
+This package contains the GDA Oracle provider.
+
+%description provider-oracle -l pl.UTF-8
+Pakiet dostarczający dane z bazy Oracle dla GDA.
+
 %package provider-postgres
 Summary:	GDA PostgreSQL provider
 Summary(pl.UTF-8):	Źródło danych PostgreSQL dla GDA
@@ -364,6 +377,7 @@ Narzędzia graficzne dla GDA.
 %prep
 %setup -q -n libgda-%{version}
 %patch0 -p1
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -404,15 +418,14 @@ javac getsp.java
 	--enable-system-sqlite \
 	%{?with_vala:--enable-vala --enable-vala-extensions} \
 	--with-bdb=/usr \
-	--with-bdb-libdir-name=%{_lib} \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-firebird%{!?with_firebird:=no} \
-	--with-firebird-libdir-name=%{_lib} \
 	--with-java%{!?with_jdbc:=no} \
+	--with-libdir-name=%{_lib} \
 	--with-mdb%{!?with_mdb:=no} \
 	--with-mysql%{!?with_mysql:=no} \
-	--with-postgres%{!?with_pgsql:=no} \
-	--without-oracle
+	--with-oracle%{!?with_oci:=no} \
+	--with-postgres%{!?with_pgsql:=no}
 
 %{__make} -j1
 
@@ -521,6 +534,7 @@ rm -rf $RPM_BUILD_ROOT
 %{?with_ldap:%{_pkgconfigdir}/libgda-ldap-5.0.pc}
 %{?with_mdb:%{_pkgconfigdir}/libgda-mdb-5.0.pc}
 %{?with_mysql:%{_pkgconfigdir}/libgda-mysql-5.0.pc}
+%{?with_oci:%{_pkgconfigdir}/libgda-oracle-5.0.pc}
 %{?with_pgsql:%{_pkgconfigdir}/libgda-postgres-5.0.pc}
 %{_pkgconfigdir}/libgda-report-5.0.pc
 %{_pkgconfigdir}/libgda-sqlcipher-5.0.pc
@@ -631,6 +645,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-mysql.so
 %{_datadir}/libgda-5.0/mysql_specs_*.xml
+%endif
+
+%if %{with oci}
+%files provider-oracle
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-oracle.so
+%{_datadir}/libgda-5.0/oracle_specs_*.xml
 %endif
 
 %if %{with pgsql}
