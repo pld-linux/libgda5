@@ -45,7 +45,7 @@ BuildRequires:	db-devel
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	flex
 BuildRequires:	gdk-pixbuf2-devel >= 2.0
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 1.30.0
