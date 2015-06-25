@@ -22,19 +22,18 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.2.2
-Release:	3
+Version:	5.2.4
+Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
-# Source0-md5:	d2676630e621ddf5db6e336e62c23742
+# Source0-md5:	d008c9e9af2e9cd35dfe550cfbfd99d6
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-oracle.patch
 Patch2:		%{name}-missing.patch
-Patch3:		%{name}-vala.patch
-Patch4:		%{name}-format.patch
-Patch5:		%{name}-yelp.patch
-Patch6:		java-arch.patch
+Patch3:		%{name}-format.patch
+Patch4:		%{name}-yelp.patch
+Patch5:		java-arch.patch
 URL:		http://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
@@ -79,7 +78,7 @@ BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpmbuild(macros) >= 1.601
 BuildRequires:	sqlite3-devel >= 3.6.11
 BuildRequires:	tar >= 1:1.22
-%{?with_vala:BuildRequires:	vala >= 2:0.18}
+%{?with_vala:BuildRequires:	vala >= 2:0.26.0}
 BuildRequires:	xz
 BuildRequires:	yelp-tools
 Requires:	glib2 >= 1:2.32.0
@@ -143,7 +142,7 @@ Summary:	libgda 5.x API for Vala language
 Summary(pl.UTF-8):	API libgda 5.x dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	vala >= 2:0.18
+Requires:	vala >= 2:0.26.0
 
 %description -n vala-libgda5
 libgda 5.x API for Vala language.
@@ -385,7 +384,6 @@ Narzędzia graficzne dla GDA.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 %build
 # included version is bash-specific, use system file
@@ -410,6 +408,7 @@ export _JAVA_SUFFIX="/lib/amd64/server"
 javac getsp.java
 %endif
 %configure \
+	%{?with_vala:VALA_API_VERSION="$(pkg-config --version vapigen)"} \
 	--disable-silent-rules \
 	%{!?with_vala:--disable-vala} \
 	--enable-gda-gi \
@@ -686,6 +685,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/gda-browser-5.0
 %attr(755,root,root) %{_bindir}/gda-control-center-5.0
+%{_datadir}/appdata/gda-browser-5.0.appdata.xml
 %{_desktopdir}/gda-browser-5.0.desktop
 %{_desktopdir}/gda-control-center-5.0.desktop
 %{_pixmapsdir}/gda-browser-5.0.png
