@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.4
-Release:	1
+Release:	2
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -143,6 +143,9 @@ Summary(pl.UTF-8):	API libgda 5.x dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	vala >= 2:0.26.0
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description -n vala-libgda5
 libgda 5.x API for Vala language.
@@ -366,9 +369,9 @@ Pakiet dostarczający dane z Web dla GDA.
 Summary:	Graphical tools for GDA
 Summary(pl.UTF-8):	Narzędzia graficzne dla GDA
 Group:		X11/Applications
+Requires:	%{name}-ui = %{version}-%{release}
 Requires:	gtk-update-icon-cache
 Requires:	hicolor-icon-theme
-Requires:	%{name}-ui = %{version}-%{release}
 
 %description tools
 Graphical tools for GDA.
@@ -447,7 +450,7 @@ rm -rf $RPM_BUILD_ROOT
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
 # outdated version of sr@latin
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/sr@Latn
+%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/sr@Latn
 
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
