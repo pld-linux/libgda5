@@ -1,0 +1,11 @@
+--- libgda-5.2.4/configure.ac~	2015-06-13 11:07:23.000000000 +0200
++++ libgda-5.2.4/configure.ac	2016-05-05 19:21:21.587028339 +0200
+@@ -550,7 +550,7 @@
+ 	AM_PROG_VALAC([0.26.0])
+ 	if test "x$VALA_API_VERSION" = "x"
+ 	then
+-		VAPIGEN_CHECK([0.26.0],[0.26],,no)
++		VAPIGEN_CHECK([0.26.0],,,no)
+ 		vala_api="0.26 (Default)"
+ 	else
+ 		VAPIGEN_CHECK([0.26.0],$VALA_API_VERSION,,no)
