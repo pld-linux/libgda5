@@ -1,0 +1,14 @@
+--- libgda-5.2.4/m4/java.m4~	2016-05-05 18:28:46.000000000 +0200
++++ libgda-5.2.4/m4/java.m4	2016-05-05 18:39:44.169761450 +0200
+@@ -175,6 +175,11 @@
+ 		    JTYPE="Sun JRE 1.7"
+ 		    JFLAGS="-Xlint:unchecked -Xlint:deprecation"
+ 		    ;;
++                JRE1.8.*)
++		    try_java=true
++		    JTYPE="Sun JRE 1.8"
++		    JFLAGS="-Xlint:unchecked -Xlint:deprecation"
++		    ;;
+                 JREgcj-4*)
+ 		    try_java=true
+ 		    JTYPE="GCJ"

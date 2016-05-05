@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.4
-Release:	2
+Release:	3
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -34,6 +34,7 @@ Patch2:		%{name}-missing.patch
 Patch3:		%{name}-format.patch
 Patch4:		%{name}-yelp.patch
 Patch5:		java-arch.patch
+Patch6:		java8.patch
 URL:		http://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
@@ -387,6 +388,7 @@ Narzędzia graficzne dla GDA.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 # included version is bash-specific, use system file
@@ -411,7 +413,6 @@ export _JAVA_SUFFIX="/lib/amd64/server"
 javac getsp.java
 %endif
 %configure \
-	%{?with_vala:VALA_API_VERSION="$(pkg-config --version vapigen)"} \
 	--disable-silent-rules \
 	%{!?with_vala:--disable-vala} \
 	--enable-gda-gi \
