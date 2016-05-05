@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.4
-Release:	3
+Release:	4
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -413,6 +413,7 @@ export _JAVA_SUFFIX="/lib/amd64/server"
 javac getsp.java
 %endif
 %configure \
+	%{?with_vala:VALA_API_VERSION="$(pkg-config --modversion vapigen)"} \
 	--disable-silent-rules \
 	%{!?with_vala:--disable-vala} \
 	--enable-gda-gi \
