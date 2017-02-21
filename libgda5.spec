@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.4
-Release:	7
+Release:	8
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -623,7 +623,6 @@ rm -rf $RPM_BUILD_ROOT
 %files provider-firebird
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-firebird-client.so
-%attr(755,root,root) %{_libdir}/libgda-5.0/providers/libgda-firebird-embed.so
 %{_datadir}/libgda-5.0/firebird_specs_*.xml
 %endif
 
