@@ -23,7 +23,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.4
-Release:	11
+Release:	12
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -38,6 +38,7 @@ Patch6:		java8.patch
 Patch7:		vapigen-detect.patch
 Patch8:		%{name}-sqlite.patch
 Patch9:		convert-files-to-unicode.patch
+Patch10:	openssl.patch
 URL:		http://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
@@ -395,6 +396,7 @@ Narzędzia graficzne dla GDA.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %build
 # included version is bash-specific, use system file
