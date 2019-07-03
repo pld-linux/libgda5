@@ -29,15 +29,15 @@
  				String lp2=System.getProperty("java.library.path");
  				System.out.println(lp1+":"+lp2);
  			}
---- libgda-5.2.1/m4/java.m4~	2013-10-19 14:35:27.000000000 +0200
-+++ libgda-5.2.1/m4/java.m4	2013-12-01 10:07:36.001317264 +0100
-@@ -213,9 +213,9 @@
+--- libgda-5.2.9/m4/java.m4.orig	2019-07-02 19:34:15.673428245 +0200
++++ libgda-5.2.9/m4/java.m4	2019-07-02 19:36:58.065881823 +0200
+@@ -221,9 +221,9 @@
  	                    JAVA_LD_PATH=
  	                    ;;
  	                *)
 -	                    RUN_JAVA(JAVA_LIBS, [-classpath ${srcdir} getsp -libs])
 +	                    RUN_JAVA(JAVA_LIBS, [-classpath ${srcdir} getsp -libs ${_JAVA_SUFFIX}])
- 	                    JAVA_LIBS="${JAVA_LIBS} -ljvm"
+ 	                    JAVA_LIBS="${JAVA_LIBS} -L${JAVA_HOME}/lib/server -ljvm"
 -			    RUN_JAVA(JAVA_LD_PATH, [-classpath ${srcdir} getsp -ldpath])
 +			    RUN_JAVA(JAVA_LD_PATH, [-classpath ${srcdir} getsp -ldpath ${_JAVA_SUFFIX}])
  	           	    ;;

@@ -1,0 +1,11 @@
+--- libgda-5.2.9/m4/bdb.m4.orig	2019-03-18 01:56:22.000000000 +0100
++++ libgda-5.2.9/m4/bdb.m4	2019-07-02 20:48:51.682512956 +0200
+@@ -128,7 +128,7 @@
+ 	do
+ 	    bdbdir=""
+ 	    AC_MSG_CHECKING([for Berkeley DB files in $d])
+-	    for version in "" 6.0 5.3 5.1 5.0 4.9 4.8 4.7
++	    for version in "" 6.1 6.0 5.3 5.1 5.0 4.9 4.8 4.7
+ 	    do
+ 	        if test $platform_win32 = yes
+ 		then

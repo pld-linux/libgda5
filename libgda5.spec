@@ -1,8 +1,7 @@
-# TODO:
-# - glade catalog?
 #
 # Conditional build:
 %bcond_without	apidocs		# API documentation
+%bcond_without	glade		# Glade catalog
 %bcond_without	static_libs	# static libraries build
 %bcond_without	vala		# Vala APIs and GdaData C library
 # - database plugins:
@@ -22,34 +21,31 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.2.4
-Release:	12
+Version:	5.2.9
+Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
-# Source0-md5:	d008c9e9af2e9cd35dfe550cfbfd99d6
+# Source0-md5:	29bfbf4787a05a150fc506a7e1f38523
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-oracle.patch
 Patch2:		%{name}-missing.patch
-Patch3:		%{name}-format.patch
+Patch3:		%{name}-db.patch
 Patch4:		%{name}-yelp.patch
 Patch5:		java-arch.patch
 Patch6:		java8.patch
-Patch7:		vapigen-detect.patch
 Patch8:		%{name}-sqlite.patch
-Patch9:		convert-files-to-unicode.patch
-Patch10:	openssl.patch
-URL:		http://www.gnome-db.org/
+URL:		https://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
 BuildRequires:	automake >= 1:1.11.1
-BuildRequires:	bison
-BuildRequires:	db-devel
-%{?with_dbsql:BuildRequires:	db-sql-devel}
+BuildRequires:	db-devel >= 4.7
+%{?with_dbsql:BuildRequires:	db-sql-devel >= 4.7}
 BuildRequires:	docbook-dtd412-xml
-BuildRequires:	flex
 BuildRequires:	gdk-pixbuf2-devel >= 2.0
 BuildRequires:	gettext-tools
+# pkgconfig(gladeui-2.0)
+%{?with_glade:BuildRequires:	glade-devel >= 3.0}
 BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	glibc-misc
 BuildRequires:	gobject-introspection-devel >= 1.30.0
@@ -60,14 +56,12 @@ BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	gtksourceview3-devel >= 3.0
 BuildRequires:	intltool >= 0.40.6
 BuildRequires:	iso-codes
-%{?with_jdbc:BuildRequires:	jdk}
+%{?with_jdbc:BuildRequires:	jdk >= 1.5}
 BuildRequires:	json-glib-devel
 BuildRequires:	libgcrypt-devel >= 1.1.42
-%{?with_vala:BuildRequires:	libgee-devel >= 0.8.0}
 BuildRequires:	libsecret-devel
 BuildRequires:	libsoup-devel >= 2.24.0
 BuildRequires:	libtool >= 2:2.2.6
-BuildRequires:	libunique-devel
 BuildRequires:	libxml2-devel >= 1:2.6.26
 BuildRequires:	libxslt-devel >= 1.1.17
 %{?with_mdb:BuildRequires:	mdbtools-devel >= 0.6-0.pre1.7}
@@ -81,7 +75,7 @@ BuildRequires:	pkgconfig >= 1:0.18
 BuildRequires:	python
 BuildRequires:	readline-devel >= 5.0
 BuildRequires:	rpmbuild(macros) >= 1.601
-BuildRequires:	sqlite3-devel >= 3.6.11
+BuildRequires:	sqlite3-devel >= 3.10.2
 BuildRequires:	tar >= 1:1.22
 %{?with_vala:BuildRequires:	vala >= 2:0.26.0}
 BuildRequires:	xz
@@ -351,6 +345,7 @@ Summary:	GDA SQLite provider
 Summary(pl.UTF-8):	Źródło danych SQLite dla GDA
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	sqlite3 >= 3.10.2
 
 %description provider-sqlite
 This package contains the GDA SQLite provider.
@@ -384,6 +379,19 @@ Graphical tools for GDA.
 %description tools -l pl.UTF-8
 Narzędzia graficzne dla GDA.
 
+%package glade
+Summary:	libgda catalog file and icons for Glade
+Summary(pl.UTF-8):	Plik katalogu oraz ikony libgda dla Glade
+Group:		X11/Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	glade >= 3
+
+%description glade
+libgda catalog file and icons for Glade.
+
+%description glade -l pl.UTF-8
+Plik katalogu oraz ikony libgda dla Glade.
+
 %prep
 %setup -q -n libgda-%{version}
 %patch0 -p1
@@ -393,10 +401,7 @@ Narzędzia graficzne dla GDA.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
 
 %build
 # included version is bash-specific, use system file
@@ -458,9 +463,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
-# outdated version of sr@latin
-%{__rm} -r $RPM_BUILD_ROOT%{_localedir}/sr@Latn
-
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
 %py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
 %py_ocomp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
@@ -499,14 +501,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgda-report-5.0.so.4
 %attr(755,root,root) %{_libdir}/libgda-xslt-5.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgda-xslt-5.0.so.4
-%if %{with vala}
-%attr(755,root,root) %{_libdir}/libgdadata-5.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgdadata-5.0.so.0
-%endif
 %{_libdir}/girepository-1.0/Gda-5.0.typelib
-%if %{with vala}
-%{_libdir}/girepository-1.0/GdaData-5.0.typelib
-%endif
 %dir %{_libdir}/libgda-5.0
 %dir %{_libdir}/libgda-5.0/providers
 %dir %{_datadir}/libgda-5.0
@@ -532,13 +527,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgda-5.0.so
 %attr(755,root,root) %{_libdir}/libgda-report-5.0.so
 %attr(755,root,root) %{_libdir}/libgda-xslt-5.0.so
-%if %{with vala}
-%attr(755,root,root) %{_libdir}/libgdadata-5.0.so
-%endif
 %{_datadir}/gir-1.0/Gda-5.0.gir
-%if %{with vala}
-%{_datadir}/gir-1.0/GdaData-5.0.gir
-%endif
 %{_includedir}/libgda-5.0
 %{_pkgconfigdir}/libgda-5.0.pc
 %{_pkgconfigdir}/libgda-bdb-5.0.pc
@@ -555,7 +544,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/libgda-sqlite-5.0.pc
 %{_pkgconfigdir}/libgda-xslt-5.0.pc
 %{_pkgconfigdir}/libgda-web-5.0.pc
-%{?with_vala:%{_pkgconfigdir}/libgdadata-5.0.pc}
 
 %if %{with static_libs}
 %files static
@@ -563,15 +551,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgda-5.0.a
 %{_libdir}/libgda-report-5.0.a
 %{_libdir}/libgda-xslt-5.0.a
-%if %{with vala}
-%{_libdir}/libgdadata-5.0.a
-%endif
 %endif
 
 %if %{with vala}
 %files -n vala-libgda5
 %defattr(644,root,root,755)
-%{_datadir}/vala/vapi/gdadata-5.0.vapi
 %{_datadir}/vala/vapi/libgda-5.0.vapi
 %endif
 
@@ -601,7 +585,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with vala}
 %files -n vala-libgda5-ui
 %defattr(644,root,root,755)
-%{_datadir}/vala/vapi/libgdaui-5.0.vapi
+%{_datadir}/vala/vapi/libgda-ui-5.0.vapi
 %endif
 
 %if %{with apidocs}
@@ -701,3 +685,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_desktopdir}/gda-control-center-5.0.desktop
 %{_pixmapsdir}/gda-browser-5.0.png
 %{_iconsdir}/hicolor/*/apps/gda-control-center.png
+
+%if %{with glade}
+%files glade
+%defattr(644,root,root,755)
+%{_datadir}/glade/catalogs/gdaui-catalog.xml
+%{_datadir}/glade/pixmaps/widget-gdaui-gdauibasicform.png
+%{_datadir}/glade/pixmaps/widget-gdaui-gdauicombo.png
+%{_datadir}/glade/pixmaps/widget-gdaui-gdauigrid.png
+%{_datadir}/glade/pixmaps/widget-gdaui-gdauilogin.png
+%{_datadir}/glade/pixmaps/widget-gdaui-gdauirawgrid.png
+%endif
