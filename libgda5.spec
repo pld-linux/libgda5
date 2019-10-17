@@ -22,7 +22,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.9
-Release:	1
+Release:	2
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
