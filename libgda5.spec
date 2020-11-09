@@ -21,12 +21,12 @@
 Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
-Version:	5.2.9
-Release:	2
+Version:	5.2.10
+Release:	1
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/libgda/5.2/libgda-%{version}.tar.xz
-# Source0-md5:	29bfbf4787a05a150fc506a7e1f38523
+Source0:	https://download.gnome.org/sources/libgda/5.2/libgda-%{version}.tar.xz
+# Source0-md5:	e4b5866e78571a70953416d1dc395097
 Patch0:		%{name}-configure.patch
 Patch1:		%{name}-oracle.patch
 Patch2:		%{name}-missing.patch
@@ -72,9 +72,9 @@ BuildRequires:	openssl-devel
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig >= 1:0.18
 %{?with_pgsql:BuildRequires:	postgresql-devel}
-BuildRequires:	python
+BuildRequires:	python3 >= 1:3
 BuildRequires:	readline-devel >= 5.0
-BuildRequires:	rpmbuild(macros) >= 1.601
+BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sqlite3-devel >= 3.10.2
 BuildRequires:	tar >= 1:1.22
 %{?with_vala:BuildRequires:	vala >= 2:0.26.0}
@@ -142,9 +142,7 @@ Summary(pl.UTF-8):	API libgda 5.x dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	vala >= 2:0.26.0
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description -n vala-libgda5
 libgda 5.x API for Vala language.
@@ -209,9 +207,7 @@ Summary:	GNU Data Access API documentation
 Summary(pl.UTF-8):	Dokumentacja API GNU Data Access
 Group:		Documentation
 Requires:	gtk-doc-common
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description apidocs
 GNU Data Access API documentation.
@@ -402,6 +398,10 @@ Plik katalogu oraz ikony libgda dla Glade.
 %patch5 -p1
 %patch6 -p1
 %patch8 -p1
+
+%{__sed} -i -e '1s,/usr/bin/env python3,%{__python3},' \
+	libgda-report/RML/trml2html/trml2html.py \
+	libgda-report/RML/trml2pdf/trml2pdf.py
 
 %build
 # included version is bash-specific, use system file
