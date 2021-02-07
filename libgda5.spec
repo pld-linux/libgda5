@@ -22,7 +22,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.10
-Release:	1
+Release:	2
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	https://download.gnome.org/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -463,10 +463,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %{!?with_apidocs:rm -rf $RPM_BUILD_ROOT%{_gtkdocdir}}
 
-%py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
-%py_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
-%py_ocomp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
-%py_ocomp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
+%py3_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
+%py3_comp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
+%py3_ocomp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2html
+%py3_ocomp $RPM_BUILD_ROOT%{_datadir}/libgda-5.0/gda_trml2pdf
 
 %find_lang libgda-5.0
 %find_lang gda-browser --with-gnome
