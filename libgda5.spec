@@ -142,7 +142,7 @@ Summary(pl.UTF-8):	API libgda 5.x dla języka Vala
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	vala >= 2:0.26.0
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description -n vala-libgda5
 libgda 5.x API for Vala language.
@@ -207,7 +207,7 @@ Summary:	GNU Data Access API documentation
 Summary(pl.UTF-8):	Dokumentacja API GNU Data Access
 Group:		Documentation
 Requires:	gtk-doc-common
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description apidocs
 GNU Data Access API documentation.
