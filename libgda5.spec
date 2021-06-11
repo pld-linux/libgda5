@@ -479,6 +479,9 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%post	ui -p /sbin/ldconfig
+%postun	ui -p /sbin/ldconfig
+
 %post tools
 %update_icon_cache hicolor
 
