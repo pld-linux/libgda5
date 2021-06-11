@@ -74,6 +74,7 @@ BuildRequires:	pkgconfig >= 1:0.18
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 BuildRequires:	python3 >= 1:3
 BuildRequires:	readline-devel >= 5.0
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 BuildRequires:	sqlite3-devel >= 3.10.2
 BuildRequires:	tar >= 1:1.22
