@@ -1,7 +1,8 @@
---- libgda-5.2.4/m4/java.m4~	2016-05-05 18:28:46.000000000 +0200
-+++ libgda-5.2.4/m4/java.m4	2016-05-05 18:39:44.169761450 +0200
-@@ -175,6 +175,11 @@
- 		    JTYPE="Sun JRE 1.7"
+diff -urNp -x '*.orig' libgda-5.2.10.org/m4/java.m4 libgda-5.2.10/m4/java.m4
+--- libgda-5.2.10.org/m4/java.m4	2021-10-06 22:22:24.497404419 +0200
++++ libgda-5.2.10/m4/java.m4	2021-10-06 22:22:25.204072831 +0200
+@@ -183,6 +183,11 @@ m4_define([_JAVA_CHECK_INTERNAL],
+ 		    JTYPE="Sun JRE 11.0"
  		    JFLAGS="-Xlint:unchecked -Xlint:deprecation"
  		    ;;
 +                JRE1.8.*)
