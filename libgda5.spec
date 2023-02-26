@@ -22,7 +22,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.10
-Release:	4
+Release:	5
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	https://download.gnome.org/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -34,6 +34,7 @@ Patch3:		%{name}-db.patch
 Patch4:		%{name}-yelp.patch
 Patch5:		java-arch.patch
 Patch6:		java8.patch
+Patch7:		libgda-mdb1.0.patch
 Patch8:		%{name}-sqlite.patch
 URL:		https://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
@@ -64,7 +65,7 @@ BuildRequires:	libsoup-devel >= 2.24.0
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	libxml2-devel >= 1:2.6.26
 BuildRequires:	libxslt-devel >= 1.1.17
-%{?with_mdb:BuildRequires:	mdbtools-devel >= 0.6-0.pre1.7}
+%{?with_mdb:BuildRequires:	mdbtools-devel >= 1.0}
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ldap:BuildRequires:	openldap-devel}
 BuildRequires:	openssl-devel
@@ -281,7 +282,7 @@ Summary:	GDA MDB provider
 Summary(pl.UTF-8):	Źródło danych MDB
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	mdbtools-libs >= 0.6
+Requires:	mdbtools-libs >= 1.0
 
 %description provider-mdb
 This package contains the GDA MDB provider.
@@ -398,6 +399,7 @@ Plik katalogu oraz ikony libgda dla Glade.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 %patch8 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python3,%{__python3},' \
