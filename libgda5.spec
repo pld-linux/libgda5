@@ -6,10 +6,10 @@
 %bcond_without	vala		# Vala APIs and GdaData C library
 # - database plugins:
 %bcond_without	dbsql		# BerkeleyDB SQL plugin
-%bcond_without	firebird	# Firebird plugins
+%bcond_with	firebird	# Firebird plugins
 %bcond_without	jdbc		# JDBC plugin
 %bcond_without	ldap		# LDAP plugin
-%bcond_without	mdb		# MDB plugin
+%bcond_with	mdb		# MDB plugin
 %bcond_without	mysql		# MySQL plugin
 %bcond_with	oci		# Oracle DB plugin
 %bcond_without	pgsql		# PostgreSQL plugin
@@ -22,7 +22,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.10
-Release:	6
+Release:	7
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	https://download.gnome.org/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -36,6 +36,7 @@ Patch5:		java-arch.patch
 Patch6:		java8.patch
 Patch7:		libgda-mdb1.0.patch
 Patch8:		%{name}-sqlite.patch
+Patch9:		build.patch
 URL:		https://www.gnome-db.org/
 %{?with_firebird:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf >= 2.68
@@ -401,6 +402,7 @@ Plik katalogu oraz ikony libgda dla Glade.
 %patch -P6 -p1
 %patch -P7 -p1
 %patch -P8 -p1
+%patch -P9 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env python3,%{__python3},' \
 	libgda-report/RML/trml2html/trml2html.py \
@@ -418,6 +420,7 @@ export _JAVA_SUFFIX="/lib/i386/server"
 export _JAVA_SUFFIX="/lib/amd64/server"
 %endif
 %endif
+%{__autopoint}
 %{__gtkdocize}
 %{__intltoolize}
 %{__libtoolize}
