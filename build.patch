@@ -137,3 +137,229 @@
  #endif
  
  static GdauiDataEntry *plugin_entry_filesel_create_func (GdaDataHandler *handler, GType type, const gchar *options);
+--- libgda-5.2.10/tools/browser/common/ui-formgrid.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/common/ui-formgrid.c	2025-08-12 08:26:45.283292343 +0200
+@@ -754,11 +754,11 @@ statement_executed_cb (G_GNUC_UNUSED Bro
+ 				ui_formgrid_handle_user_prefs (UI_FORMGRID (fg), NULL, stmt);
+ 				g_object_unref (stmt);
+ 			}
+-			aed->model = g_object_ref (out_result);
++			aed->model = GDA_DATA_MODEL (g_object_ref (out_result));
+ 			g_signal_connect (aed->params, "holder-changed",
+ 					  G_CALLBACK (action_executed_holder_changed_cb), aed);
+ 
+-			aed->formgrid = g_object_ref (fg);
++			aed->formgrid = UI_FORMGRID (g_object_ref (fg));
+ 			aed->formgrid->priv->autoupdate_possible = TRUE;
+ 			gtk_widget_show (aed->formgrid->priv->autoupdate_toggle);
+ 		}
+--- libgda-5.2.10/tools/browser/common/fk-declare.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/common/fk-declare.c	2025-08-12 08:28:16.980499096 +0200
+@@ -403,7 +403,7 @@ fk_declare_new (GtkWindow *parent, GdaMe
+ 	g_free (str);
+ 
+ 	decl = FK_DECLARE (wid);
+-	decl->priv->mstruct = g_object_ref ((GObject*) mstruct);
++	decl->priv->mstruct = GDA_META_STRUCT (g_object_ref (mstruct));
+ 	decl->priv->mtable = table;
+ 
+ 	create_internal_layout (decl);
+--- libgda-5.2.10/tools/browser/schema-browser/table-info.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/schema-browser/table-info.c	2025-08-12 08:37:57.053886167 +0200
+@@ -621,7 +621,7 @@ fk_bind_select_executed_cb (G_GNUC_UNUSE
+ 			}
+ 		}
+ 	}
+-	fkdata->model = g_object_ref (out_result);
++	fkdata->model = GDA_DATA_MODEL (g_object_ref (out_result));
+ 	fkdata->model_rerunning = FALSE;
+ }
+ 
+--- libgda-5.2.10/tools/browser/canvas/browser-canvas.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/canvas/browser-canvas.c	2025-08-12 08:49:03.714472270 +0200
+@@ -853,7 +853,7 @@ browser_canvas_perform_auto_layout (Brow
+ 
+ #ifdef GRAPHVIZ_NEW_API
+ 	graph = agopen ("BrowserCanvasLayout", Agdirected, NULL);
+-        agnode (graph, "shape", "box");
++	agattr (graph, AGNODE, "shape", "box");
+         agset (graph, "height", ".1");
+         agset (graph, "width", ".1");
+         agset (graph, "fixedsize", "true");
+--- libgda-5.2.10/tools/browser/browser-virtual-connection.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/browser-virtual-connection.c	2025-08-12 08:59:43.524927991 +0200
+@@ -489,7 +489,7 @@ browser_virtual_connection_part_copy (co
+ 		if (spm->table_name)
+ 			npm->table_name = g_strdup (spm->table_name);
+ 		if (spm->model)
+-			npm->model = g_object_ref (G_OBJECT (spm->model));
++			npm->model = GDA_DATA_MODEL (g_object_ref (spm->model));
+ 		break;
+ 	}
+ 	case BROWSER_VIRTUAL_CONNECTION_PART_CNC: {
+@@ -500,7 +500,7 @@ browser_virtual_connection_part_copy (co
+ 		if (scnc->table_schema)
+ 			ncnc->table_schema = g_strdup (scnc->table_schema);
+ 		if (scnc->source_cnc)
+-			ncnc->source_cnc = g_object_ref (G_OBJECT (scnc->source_cnc));
++			ncnc->source_cnc = BROWSER_CONNECTION (g_object_ref (scnc->source_cnc));
+ 		break;
+ 	}
+ 	default:
+--- libgda-5.2.10/tools/browser/connection-binding-properties.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/connection-binding-properties.c	2025-08-12 09:00:56.088691400 +0200
+@@ -147,7 +147,7 @@ connection_binding_properties_new_create
+ 	part = g_new0 (BrowserVirtualConnectionPart, 1);
+ 	part->part_type = BROWSER_VIRTUAL_CONNECTION_PART_CNC;
+ 	part->u.cnc.table_schema = g_strdup (browser_connection_get_name (bcnc));
+-	part->u.cnc.source_cnc = g_object_ref (G_OBJECT (bcnc));
++	part->u.cnc.source_cnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 	specs->parts = g_slist_append (NULL, part);
+ 
+ 	cprop = CONNECTION_BINDING_PROPERTIES (g_object_new (CONNECTION_TYPE_BINDING_PROPERTIES, NULL));
+--- libgda-5.2.10/m4/mysql.m4~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/m4/mysql.m4	2025-08-12 09:18:01.318119054 +0200
+@@ -176,6 +176,7 @@ int main() {
+ 	    LIBS="$LIBS $MYSQL_LIBS"
+ 
+             AC_LINK_IFELSE([AC_LANG_SOURCE([
++#include <stdio.h>
+ #include <mysql.h>
+ int main() {
+     printf("%p", mysql_real_connect);
+--- libgda-5.2.10/m4/ldap.m4~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/m4/ldap.m4	2025-08-12 09:18:32.284969876 +0200
+@@ -121,6 +121,7 @@ m4_define([_LDAP_CHECK_INTERNAL],
+   	        save_LIBS="$LIBS"
+ 	        LIBS="$LIBS -L$d/$ldap_loclibdir -lldap -llber"
+    	        AC_LINK_IFELSE([AC_LANG_SOURCE([
++#include <stdio.h>
+ #include <ldap.h>
+ #include <lber.h>
+ #include <ldap_schema.h>
+--- libgda-5.2.10/configure.ac~	2020-11-08 21:23:19.000000000 +0100
++++ libgda-5.2.10/configure.ac	2025-08-12 09:22:49.819838153 +0200
+@@ -585,26 +585,11 @@ dnl ******************************
+ LIBGCRYPT_CFLAGS=""
+ LIBGCRYPT_LIBS=""
+ if test x$platform_win32 != xyes; then
+-	AC_DEFUN([VERSION_TO_NUMBER],[`$1 | awk 'BEGIN { FS = "."; } { printf "%d", ([$]1 * 1000 + [$]2) * 1000 + [$]3;}'`])
+-	AC_PATH_PROG(LIBGCRYPT_CONFIG, libgcrypt-config, no)
+-	if test "$LIBGCRYPT_CONFIG" != "no" ; then
+-   		LIBGCRYPT_VERSION=`$LIBGCRYPT_CONFIG --version`
+-		if test VERSION_TO_NUMBER(echo $LIBGCRYPT_VERSION) -lt VERSION_TO_NUMBER(echo "1.1.42") ; then
+-			LIBGCRYPT_CFLAGS=""
+-			LIBGCRYPT_LIBS=""
+-			AM_CONDITIONAL(HAVE_LIBGCRYPT, 0)
+-			echo "Password entry plugin will not be compiled, install libgcrypt >= 1.1.42 and reconfigure to make available."
+-      		else
+-			LIBGCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --cflags`
+-        		LIBGCRYPT_LIBS=`$LIBGCRYPT_CONFIG $libgcrypt_config_args --libs`
+-			AM_CONDITIONAL(HAVE_LIBGCRYPT, true)
+-        	fi
+-	else
+-	LIBGCRYPT_CFLAGS=""
+-      	LIBGCRYPT_LIBS=""
+-      	AM_CONDITIONAL(HAVE_LIBGCRYPT, 0)
+-      	echo "Password entry plugin will not be compiled, install libgcrypt and reconfigure to make available."
+-	fi
++	PKG_CHECK_MODULES([LIBGCRYPT], [libgcrypt >= 1.1.42],
++			  [AM_CONDITIONAL(HAVE_LIBGCRYPT, true)],
++			  [LIBGCRYPT_CFLAGS=""; LIBGCRYPT_LIBS="";
++			   AM_CONDITIONAL(HAVE_LIBGCRYPT, 0)
++			   AC_MSG_NOTICE([Password entry plugin will not be compiled, install libgcrypt >= 1.1.42 and reconfigure to make available.])])
+ else
+ 	AM_CONDITIONAL(HAVE_LIBGCRYPT, false)
+ fi
+--- libgda-5.2.10/libgda/sqlite/virtual/gda-ldap-connection.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/libgda/sqlite/virtual/gda-ldap-connection.c	2025-08-12 09:24:53.460574720 +0200
+@@ -726,7 +726,7 @@ gda_ldap_connection_declare_table (GdaLd
+         GDA_VCONNECTION_DATA_MODEL_SPEC (map)->create_model_func = NULL;
+         GDA_VCONNECTION_DATA_MODEL_SPEC (map)->create_filter_func = _ldap_table_create_filter;
+         GDA_VCONNECTION_DATA_MODEL_SPEC (map)->create_filtered_model_func = _ldap_table_create_model_func;
+-	map->ldap_cnc = g_object_ref (cnc);
++	map->ldap_cnc = GDA_CONNECTION (g_object_ref (cnc));
+ 	map->table_name = gda_sql_identifier_quote (table_name, GDA_CONNECTION (cnc), NULL, TRUE, FALSE);
+ 	map->filters_hash = NULL;
+ 	if (base_dn)
+--- libgda-5.2.10/tools/browser/ldap-browser/ldap-entries-page.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/ldap-entries-page.c	2025-08-12 09:40:49.989612309 +0200
+@@ -314,7 +314,7 @@ ldap_entries_page_new (BrowserConnection
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	ebrowser = LDAP_ENTRIES_PAGE (g_object_new (LDAP_ENTRIES_PAGE_TYPE, NULL));
+-	ebrowser->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	ebrowser->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 
+ 	/* header */
+         GtkWidget *label;
+--- libgda-5.2.10/tools/browser/ldap-browser/hierarchy-view.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/hierarchy-view.c	2025-08-12 09:42:48.540322073 +0200
+@@ -211,7 +211,7 @@ hierarchy_view_new (BrowserConnection *b
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	eview = HIERARCHY_VIEW (g_object_new (HIERARCHY_VIEW_TYPE, NULL));
+-	eview->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	eview->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 	g_signal_connect (eview, "drag-data-get",
+ 			  G_CALLBACK (source_drag_data_get_cb), eview);
+ 
+@@ -366,10 +366,10 @@ test_expand_row_cb (GtkTreeView *tree_vi
+ 	    g_value_get_boolean (cv)) {
+ 		IdleData *data;
+ 		data = g_new (IdleData, 1);
+-		data->tview = g_object_ref (G_OBJECT (tree_view));
+-		data->store = g_object_ref (G_OBJECT (store));
+-		data->tree = g_object_ref (G_OBJECT (eview->priv->ldap_tree));
+-		data->node = g_object_ref (G_OBJECT (node));
++		data->tview = GTK_TREE_VIEW (g_object_ref (tree_view));
++		data->store = GDAUI_TREE_STORE (g_object_ref (store));
++		data->tree = GDA_TREE (g_object_ref (eview->priv->ldap_tree));
++		data->node = GDA_TREE_NODE (g_object_ref (node));
+ 
+ 		g_idle_add_full (G_PRIORITY_HIGH_IDLE, (GSourceFunc) ldap_update_tree_part,
+ 				 data, (GDestroyNotify) idle_data_free);
+--- libgda-5.2.10/tools/browser/ldap-browser/classes-view.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/classes-view.c	2025-08-12 09:44:05.154114121 +0200
+@@ -205,7 +205,7 @@ classes_view_new (BrowserConnection *bcn
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	eview = CLASSES_VIEW (g_object_new (CLASSES_VIEW_TYPE, NULL));
+-	eview->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	eview->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 	g_signal_connect (eview, "drag-data-get",
+ 			  G_CALLBACK (source_drag_data_get_cb), eview);
+ 
+--- libgda-5.2.10/tools/browser/ldap-browser/ldap-classes-page.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/ldap-classes-page.c	2025-08-12 09:44:54.317741815 +0200
+@@ -308,7 +308,7 @@ ldap_classes_page_new (BrowserConnection
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	ebrowser = LDAP_CLASSES_PAGE (g_object_new (LDAP_CLASSES_PAGE_TYPE, NULL));
+-	ebrowser->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	ebrowser->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 
+ 	/* header */
+         GtkWidget *label;
+--- libgda-5.2.10/tools/browser/ldap-browser/filter-editor.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/filter-editor.c	2025-08-12 09:45:48.008063406 +0200
+@@ -143,7 +143,7 @@ filter_editor_new (BrowserConnection *bc
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	feditor = FILTER_EDITOR (g_object_new (FILTER_EDITOR_TYPE, NULL));
+-	feditor->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	feditor->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 
+ 	grid = gtk_grid_new ();
+ 	gtk_grid_set_column_spacing (GTK_GRID (grid), 5);
+--- libgda-5.2.10/tools/browser/ldap-browser/ldap-search-page.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/tools/browser/ldap-browser/ldap-search-page.c	2025-08-12 09:46:34.078339412 +0200
+@@ -279,7 +279,7 @@ ldap_search_page_new (BrowserConnection
+ 	g_return_val_if_fail (BROWSER_IS_CONNECTION (bcnc), NULL);
+ 
+ 	epage = LDAP_SEARCH_PAGE (g_object_new (LDAP_SEARCH_PAGE_TYPE, NULL));
+-	epage->priv->bcnc = g_object_ref ((GObject*) bcnc);
++	epage->priv->bcnc = BROWSER_CONNECTION (g_object_ref (bcnc));
+ 
+ 	/* header */
+         GtkWidget *label;
