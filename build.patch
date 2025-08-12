@@ -363,3 +363,15 @@
  
  	/* header */
          GtkWidget *label;
+--- libgda-5.2.10/providers/ldap/gda-ldap-util.c~	2020-11-08 21:23:20.000000000 +0100
++++ libgda-5.2.10/providers/ldap/gda-ldap-util.c	2025-08-12 10:25:57.319183587 +0200
+@@ -887,7 +887,8 @@ gda_ldap_attr_value_to_g_value (LdapConn
+ 			struct tm *ptm;
+ #ifdef HAVE_LOCALTIME_R
+ 			struct tm tmpstm;
+-			ptm = localtime_r (&(tv.tv_sec), &tmpstm);
++			time_t secs = (time_t) tv.tv_sec;
++			ptm = localtime_r (&secs, &tmpstm);
+ #elif HAVE_LOCALTIME_S
+ 			struct tm tmpstm;
+ 			if (localtime_s (&tmpstm, &(tv.tv_sec)) == 0)
