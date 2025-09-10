@@ -22,7 +22,7 @@ Summary:	GNU Data Access library
 Summary(pl.UTF-8):	Biblioteka GNU Data Access
 Name:		libgda5
 Version:	5.2.10
-Release:	10
+Release:	11
 License:	LGPL v2+/GPL v2+
 Group:		Libraries
 Source0:	https://download.gnome.org/sources/libgda/5.2/libgda-%{version}.tar.xz
@@ -86,6 +86,8 @@ BuildRequires:	yelp-tools
 Requires:	glib2 >= 1:2.32.0
 Conflicts:	libgda4 < 4.2.10-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		_noautoreq_pear		gda-.*\.php
 
 %description
 GNU Data Access is an attempt to provide uniform access to different
